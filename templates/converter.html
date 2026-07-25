@@ -677,6 +677,7 @@ convertButton.addEventListener('click', async () => {
         document.getElementById('formalizedText').innerHTML = '<span class="animate-pulse text-white/50">Computing formal text...</span>';
         
         let firstChunk = true;
+        let buffer = '';
 
         while (!doneReading) {
             const { value, done } = await reader.read();
@@ -685,8 +686,9 @@ convertButton.addEventListener('click', async () => {
                 break;
             }
             
-            const chunkStr = decoder.decode(value, { stream: true });
-            const lines = chunkStr.split('\n\n');
+            buffer += decoder.decode(value, { stream: true });
+            let lines = buffer.split('\n\n');
+            buffer = lines.pop();
             
             for (const line of lines) {
                 if (line.startsWith('data: ')) {
@@ -844,14 +846,59 @@ document.getElementById('regenerateButton').addEventListener('click', async () =
                 custom_formality: customFormality
             })
         });
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let doneReading = false;
+        
+        document.getElementById('analyticsPlaceholder').classList.remove('hidden');
+        document.getElementById('analyticsContent').classList.add('hidden');
+        document.getElementById('formalizedText').innerHTML = '<span class="animate-pulse text-white/50">Regenerating text...</span>';
+        
+        let firstChunk = true;
+        let buffer = '';
 
-        const data = await response.json();
-
-        if (data.success) {
-            displayResults(data);
-            showNotification('Text regenerated successfully!', 'success');
-        } else {
-            showNotification(data.error, 'error');
+        while (!doneReading) {
+            const { value, done } = await reader.read();
+            if (done) {
+                doneReading = true;
+                break;
+            }
+            
+            buffer += decoder.decode(value, { stream: true });
+            let lines = buffer.split('\n\n');
+            buffer = lines.pop();
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const jsonStr = line.substring(6);
+                    if (!jsonStr.trim()) continue;
+                    
+                    try {
+                        const data = JSON.parse(jsonStr);
+                        if (data.error) {
+                            showNotification(data.error, 'error');
+                            doneReading = true;
+                            break;
+                        }
+                        
+                        if (data.chunk) {
+                            if (firstChunk) {
+                                document.getElementById('formalizedText').innerHTML = '';
+                                firstChunk = false;
+                            }
+                            document.getElementById('formalizedText').textContent += data.chunk;
+                        }
+                        
+                        if (data.done) {
+                            displayResults(data.result);
+                            showNotification('Text regenerated successfully!', 'success');
+                            doneReading = true;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing SSE json', e, jsonStr);
+                    }
+                }
+            }
         }
     } catch (error) {
         showNotification('Regeneration failed: ' + error.message, 'error');
