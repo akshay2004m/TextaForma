@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-16 pb-12">
+    <div class="glass-card rounded-2xl p-8 relative overflow-hidden border border-white/10 shadow-2xl">
+        <!-- Decorative background blobs -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-pink-500/20 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10">
+            <div class="text-center mb-10">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-12 shadow-lg">
+                    <i class="fas fa-lock text-white text-2xl -rotate-12"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-3 tracking-wide">Sign In</h2>
+                <p class="text-white/70">Login to save your conversions globally</p>
+            </div>
+            
+            <div class="space-y-4">
+                <a href="/login/google" class="w-full flex items-center justify-center space-x-3 bg-white hover:bg-gray-100 text-gray-800 transition py-3 px-5 rounded-xl font-medium shadow-md">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="w-5 h-5">
+                    <span>Continue with Google</span>
+                </a>
+                
+                <a href="/login/microsoft" class="w-full flex items-center justify-center space-x-3 bg-[#2f2f2f] hover:bg-[#1a1a1a] border border-white/10 text-white transition py-3 px-5 rounded-xl font-medium shadow-md">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/E_Microsoft_logo.svg" alt="Microsoft" class="w-5 h-5">
+                    <span>Continue with Microsoft</span>
+                </a>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="/home" class="text-white/50 hover:text-white transition text-sm flex items-center justify-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

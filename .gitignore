@@ -1,0 +1,57 @@
+# Environment variables (contains API keys and secrets)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Large model files
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Hugging Face cache
+.cache/
+
+# Trained model directories (large files)
+final_model/
+models/
+
+# Plots (can be regenerated)
+plots/
+
+# Metrics (can be regenerated)
+metrics/

@@ -1,0 +1,1049 @@
+{% extends "base.html" %}
+
+{% block title %}Converter - TextForma{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Converter Panel -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Input Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="text-white text-2xl font-bold mb-6">
+                    <i class="fas fa-pen-to-square mr-2"></i>Input Configuration
+                </h2>
+
+                <!-- Language & Formality Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Language</label>
+                        <select id="languageSelect" class="w-full bg-white/20 text-white px-4 py-3 rounded-xl border border-white/30 focus:border-white/50 focus:outline-none transition">
+                            <option value="english">🇬🇧 English</option>
+                            <option value="hindi">🇮🇳 Hindi (हिंदी)</option>
+                            <option value="telugu">🇮🇳 Telugu (తెలుగు)</option>
+                            <option value="marathi">🇮🇳 Marathi (मराठी)</option>
+                            <option value="tamil">🇮🇳 Tamil (தமிழ்)</option>
+                            <option value="bengali">🇮🇳 Bengali (বাংলা)</option>
+                            <option value="gujarati">🇮🇳 Gujarati (ગુજરાતી)</option>
+                            <option value="malayalam">🇮🇳 Malayalam (മലയാളം)</option>
+                            <option value="kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+                            <option value="spanish">🇪🇸 Spanish (Español)</option>
+                            <option value="french">🇫🇷 French (Français)</option>
+                            <option value="german">🇩🇪 German (Deutsch)</option>
+                            <option value="japanese">🇯🇵 Japanese (日本語)</option>
+                            <option value="mandarin">🇨🇳 Mandarin (中文)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Formality Preset</label>
+                        <select id="formalityLevel" class="w-full bg-white/20 text-white px-4 py-3 rounded-xl border border-white/30 focus:border-white/50 focus:outline-none transition">
+                            <option value="casual">💬 Casual</option>
+                            <option value="professional" selected>💼 Professional</option>
+                            <option value="academic">🎓 Academic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Context Format Selector -->
+                <div class="mb-6">
+                    <label class="block text-white/80 text-sm font-medium mb-2">
+                        Output Context Format
+                        <span class="text-white/50 text-xs ml-2">(Choose how to structure the output)</span>
+                    </label>
+                    <select id="contextFormat" class="w-full bg-white/20 text-white px-4 py-3 rounded-xl border border-white/30 focus:border-white/50 focus:outline-none transition">
+                        <option value="general">📝 General - Standard formal text</option>
+                        <option value="email">📧 Email - Professional email format</option>
+                        <option value="report">📊 Report - Structured report format</option>
+                        <option value="meeting_notes">📋 Meeting Notes - Organized notes</option>
+                        <option value="presentation">🎯 Presentation - Bullet points style</option>
+                        <option value="proposal">💼 Proposal - Formal proposal format</option>
+                    </select>
+                </div>
+
+                <!-- Custom Formality Slider -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-white/80 text-sm font-medium">Custom Formality Control</label>
+                        <span class="text-white/60 text-xs">(Override preset)</span>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-white/70 text-sm">Informal</span>
+                            <span id="formalityValue" class="text-white font-bold text-lg">50%</span>
+                            <span class="text-white/70 text-sm">Highly Formal</span>
+                        </div>
+                        <input type="range" id="customFormalitySlider" min="0" max="100" value="50" class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <div class="flex items-center justify-between mt-2 text-white/50 text-xs">
+                            <span>0</span>
+                            <span>25</span>
+                            <span>50</span>
+                            <span>75</span>
+                            <span>100</span>
+                        </div>
+                        <div class="mt-3 flex items-center space-x-2">
+                            <input type="checkbox" id="useCustomFormality" class="w-4 h-4 rounded">
+                            <label for="useCustomFormality" class="text-white/70 text-sm cursor-pointer">Use custom formality level</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Mode -->
+                <div class="mb-6">
+                    <label class="block text-white/80 text-sm font-medium mb-3">Output Mode</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="outputMode" value="same_language" checked class="peer sr-only">
+                            <div class="glass-card p-4 rounded-xl border-2 border-white/20 peer-checked:border-purple-400 peer-checked:bg-purple-500/30 transition">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-language text-2xl text-white"></i>
+                                    <div>
+                                        <div class="text-white font-semibold">Same Language</div>
+                                        <div class="text-white/60 text-sm">Formalize in original language</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="outputMode" value="translate_to_english" class="peer sr-only">
+                            <div class="glass-card p-4 rounded-xl border-2 border-white/20 peer-checked:border-blue-400 peer-checked:bg-blue-500/30 transition">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-globe text-2xl text-white"></i>
+                                    <div>
+                                        <div class="text-white font-semibold">Translate to English</div>
+                                        <div class="text-white/60 text-sm">Convert to formal English</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Input Method Tabs -->
+                <div class="flex space-x-2 mb-4 bg-white/10 p-1 rounded-xl">
+                    <button id="textInputTab" class="flex-1 px-4 py-3 rounded-lg bg-white/20 text-white font-medium transition">
+                        <i class="fas fa-keyboard mr-2"></i>Text
+                    </button>
+                    <button id="voiceInputTab" class="flex-1 px-4 py-3 rounded-lg text-white/70 font-medium hover:bg-white/10 transition">
+                        <i class="fas fa-microphone mr-2"></i>Voice
+                    </button>
+                    <button id="pdfInputTab" class="flex-1 px-4 py-3 rounded-lg text-white/70 font-medium hover:bg-white/10 transition">
+                        <i class="fas fa-file-pdf mr-2"></i>PDF
+                    </button>
+                </div>
+
+                <!-- Text Input Section -->
+                <div id="textInputSection">
+                    <textarea id="textInput" rows="8" class="w-full bg-white/10 text-white px-4 py-3 rounded-xl border border-white/30 focus:border-white/50 focus:outline-none transition resize-none placeholder-white/40" placeholder="Type or paste your informal text here..."></textarea>
+                    <div class="flex items-center justify-between mt-2">
+                        <span id="charCount" class="text-white/60 text-sm">0 characters</span>
+                        <button id="clearText" class="text-white/60 hover:text-white text-sm transition">
+                            <i class="fas fa-trash mr-1"></i>Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Voice Input Section -->
+                <div id="voiceInputSection" class="hidden">
+                    <div class="text-center py-12">
+                        <button id="recordButton" class="btn-gradient w-20 h-20 rounded-full shadow-2xl hover:scale-110 transition-transform relative">
+                            <i id="recordIcon" class="fas fa-microphone text-white text-3xl"></i>
+                        </button>
+                        <p id="recordStatus" class="text-white/80 mt-4">Click to start recording</p>
+                        
+                        <!-- Animated Waveform Indicator -->
+                        <div id="waveformIndicator" class="hidden mt-6 flex items-center justify-center space-x-1">
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                            <div class="waveform-bar bg-red-500 w-1 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div id="transcribedTextBox" class="hidden mt-4">
+                        <label class="block text-white/80 text-sm font-medium mb-2">Transcribed:</label>
+                        <div class="bg-white/10 rounded-xl p-4 border border-white/30">
+                            <p id="transcribedText" class="text-white"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF Input Section -->
+                <div id="pdfInputSection" class="hidden">
+                    <div class="text-center py-12 border-2 border-dashed border-white/30 rounded-xl">
+                        <i class="fas fa-file-pdf text-white/40 text-6xl mb-4"></i>
+                        <p class="text-white/80 mb-4">Upload a PDF to extract and formalize text</p>
+                        <label for="pdfFileInput" class="btn-gradient inline-block text-white font-bold px-6 py-3 rounded-xl cursor-pointer">
+                            <i class="fas fa-upload mr-2"></i>Choose PDF File
+                        </label>
+                        <input type="file" id="pdfFileInput" accept=".pdf" class="hidden">
+                        <p class="text-white/50 text-xs mt-3">Maximum file size: 16MB</p>
+                    </div>
+                    <div id="pdfProcessing" class="hidden mt-4 text-center">
+                        <div class="spinner inline-block mb-2"></div>
+                        <p class="text-white/80">Extracting text from PDF...</p>
+                    </div>
+                    <div id="pdfExtractedBox" class="hidden mt-4">
+                        <label class="block text-white/80 text-sm font-medium mb-2">Extracted Text:</label>
+                        <div class="bg-white/10 rounded-xl p-4 border border-white/30 max-h-48 overflow-y-auto">
+                            <p id="pdfExtractedText" class="text-white text-sm"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button id="convertButton" class="w-full btn-gradient text-white font-bold py-4 rounded-xl mt-6 text-lg">
+                    <span id="convertText"><i class="fas fa-wand-magic-sparkles mr-2"></i>Convert to Formal</span>
+                    <div id="convertSpinner" class="hidden inline-block spinner ml-2"></div>
+                </button>
+            </div>
+
+            <!-- Output Card -->
+            <div id="outputCard" class="glass-card rounded-2xl p-8 hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-white text-2xl font-bold">
+                        <i class="fas fa-sparkles mr-2"></i>Formalized Output
+                    </h2>
+                    <div class="flex space-x-2">
+                        <button id="listenButton" class="glass-card text-white px-4 py-2 rounded-lg hover:bg-white/20 transition" title="Listen">
+                            <i class="fas fa-volume-up mr-2"></i>Listen
+                        </button>
+                        <button id="explainButton" class="glass-card text-white px-4 py-2 rounded-lg hover:bg-white/20 transition" title="Explain Changes">
+                            <i class="fas fa-brain mr-2"></i>Explain
+                        </button>
+                        <button id="copyButton" class="glass-card text-white px-4 py-2 rounded-lg hover:bg-white/20 transition">
+                            <i class="fas fa-copy mr-2"></i>Copy
+                        </button>
+                        <button id="downloadPdfButton" class="glass-card text-white px-4 py-2 rounded-lg hover:bg-white/20 transition">
+                            <i class="fas fa-file-pdf mr-2"></i>PDF
+                        </button>
+                        <button id="newConversion" class="glass-card text-white px-4 py-2 rounded-lg hover:bg-white/20 transition">
+                            <i class="fas fa-rotate-right mr-2"></i>New
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Tags -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <span class="bg-purple-500/30 text-purple-200 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-language mr-1"></i><span id="selectedLang"></span>
+                    </span>
+                    <span class="bg-blue-500/30 text-blue-200 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-robot mr-1"></i><span id="detectedLang"></span>
+                    </span>
+                    <span class="bg-green-500/30 text-green-200 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-check mr-1"></i><span id="outputMode"></span>
+                    </span>
+                    <span class="bg-pink-500/30 text-pink-200 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-star mr-1"></i><span id="formalityTag"></span>
+                    </span>
+                    <span class="bg-orange-500/30 text-orange-200 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-file-alt mr-1"></i><span id="contextTag"></span>
+                    </span>
+                </div>
+
+                <!-- Manual Formality Adjuster -->
+                <div class="bg-white/10 rounded-xl p-4 mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-white/80 text-sm font-medium">
+                            <i class="fas fa-sliders mr-2"></i>Adjust Formality Level
+                        </label>
+                        <button id="regenerateButton" class="bg-blue-500/30 hover:bg-blue-500/50 text-blue-200 px-4 py-2 rounded-lg text-sm transition">
+                            <i class="fas fa-refresh mr-2"></i>Regenerate
+                        </button>
+                    </div>
+                    <select id="outputFormalityLevel" class="w-full bg-white/20 text-white px-4 py-3 rounded-xl border border-white/30 focus:border-white/50 focus:outline-none transition">
+                        <option value="casual">💬 Casual - Conversational and friendly</option>
+                        <option value="professional" selected>💼 Professional - Standard business tone</option>
+                        <option value="academic">🎓 Academic - Scholarly and formal</option>
+                        <option value="custom">⚙️ Custom - Use slider below</option>
+                    </select>
+                    
+                    <!-- Custom Slider for Output -->
+                    <div id="outputCustomSlider" class="hidden mt-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white/70 text-sm">Informal</span>
+                            <span id="outputFormalityValue" class="text-white font-bold">50%</span>
+                            <span class="text-white/70 text-sm">Highly Formal</span>
+                        </div>
+                        <input type="range" id="outputCustomFormalitySlider" min="0" max="100" value="50" class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    </div>
+                </div>
+
+                <!-- Text Comparison -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-white/60 text-sm font-medium mb-2">Original:</label>
+                        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                            <p id="originalText" class="text-white/90"></p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <i class="fas fa-arrow-down text-white/40 text-2xl"></i>
+                    </div>
+
+                    <div>
+                        <label class="block text-white/60 text-sm font-medium mb-2">Formalized:</label>
+                        <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                            <p id="formalizedText" class="text-white font-medium"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Section -->
+                <div id="explanationSection" class="hidden mt-6 bg-purple-500/10 border border-purple-500/30 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">
+                            <i class="fas fa-brain mr-2 text-purple-400"></i>Why these changes?
+                        </h3>
+                        <button id="closeExplanation" class="text-white/50 hover:text-white transition">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="explanationContent" class="text-white/90 space-y-2 whitespace-pre-wrap text-sm"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Quick Stats -->
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-white text-lg font-bold mb-4">
+                    <i class="fas fa-chart-simple mr-2"></i>Text Analytics
+                </h3>
+                <div id="analyticsPlaceholder" class="text-center py-12">
+                    <i class="fas fa-chart-pie text-white/30 text-5xl mb-4"></i>
+                    <p class="text-white/60">Analytics will appear after conversion</p>
+                </div>
+                <div id="analyticsContent" class="hidden space-y-4">
+                    <!-- Original Stats -->
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="text-white/60 text-sm mb-3 font-medium">Original Text</div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <div class="text-white text-2xl font-bold" id="origWords">0</div>
+                                <div class="text-white/60 text-xs">Words</div>
+                            </div>
+                            <div>
+                                <div class="text-white text-2xl font-bold" id="origSentences">0</div>
+                                <div class="text-white/60 text-xs">Sentences</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-white/20">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white/60 text-xs">Formality</span>
+                                <span class="text-white font-bold" id="origFormality">0%</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-2 mt-2">
+                                <div id="origFormalityBar" class="bg-gradient-to-r from-red-400 to-yellow-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formalized Stats -->
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="text-white/60 text-sm mb-3 font-medium">Formalized Text</div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <div class="text-white text-2xl font-bold" id="formWords">0</div>
+                                <div class="text-white/60 text-xs">Words</div>
+                            </div>
+                            <div>
+                                <div class="text-white text-2xl font-bold" id="formSentences">0</div>
+                                <div class="text-white/60 text-xs">Sentences</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-white/20">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white/60 text-xs">Formality</span>
+                                <span class="text-white font-bold" id="formFormality">0%</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-2 mt-2">
+                                <div id="formFormalityBar" class="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Improvement -->
+                    <div class="bg-gradient-to-br from-green-500/20 to-blue-500/20 border border-green-400/30 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-white/80 text-sm">Improvement</span>
+                            <span class="text-2xl font-bold text-green-300" id="improvement">+0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-white text-lg font-bold mb-4">
+                    <i class="fas fa-lightbulb mr-2"></i>Tips
+                </h3>
+                <ul class="space-y-3 text-white/80 text-sm">
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-400 mr-2 mt-1"></i>
+                        <span>Choose context format for specific output styles</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-400 mr-2 mt-1"></i>
+                        <span>Use custom slider for precise formality control</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-400 mr-2 mt-1"></i>
+                        <span>Regenerate with different formality levels after conversion</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-400 mr-2 mt-1"></i>
+                        <span>Upload PDFs to formalize documents</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    /* Custom slider styling */
+    .slider-thumb::-webkit-slider-thumb {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+    
+    .slider-thumb::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+    
+    /* Waveform animation */
+    .waveform-bar {
+        height: 40px;
+        animation: waveform 0.8s ease-in-out infinite;
+    }
+    
+    .waveform-bar:nth-child(1) { animation-delay: 0s; }
+    .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+    .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+    .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+    .waveform-bar:nth-child(5) { animation-delay: 0.4s; }
+    .waveform-bar:nth-child(6) { animation-delay: 0.5s; }
+    .waveform-bar:nth-child(7) { animation-delay: 0.6s; }
+    .waveform-bar:nth-child(8) { animation-delay: 0.7s; }
+    .waveform-bar:nth-child(9) { animation-delay: 0.8s; }
+    .waveform-bar:nth-child(10) { animation-delay: 0.9s; }
+    
+    @keyframes waveform {
+        0%, 100% { height: 10px; }
+        50% { height: 40px; }
+    }
+</style>
+
+<script>
+let mediaRecorder, audioChunks = [];
+let currentFormData = {};
+
+// Tab switching
+const textTab = document.getElementById('textInputTab');
+const voiceTab = document.getElementById('voiceInputTab');
+const pdfTab = document.getElementById('pdfInputTab');
+const textSection = document.getElementById('textInputSection');
+const voiceSection = document.getElementById('voiceInputSection');
+const pdfSection = document.getElementById('pdfInputSection');
+
+function switchTab(activeTab, activeSection) {
+    [textTab, voiceTab, pdfTab].forEach(tab => {
+        tab.classList.remove('bg-white/20');
+        tab.classList.add('text-white/70');
+    });
+    [textSection, voiceSection, pdfSection].forEach(section => {
+        section.classList.add('hidden');
+    });
+    
+    activeTab.classList.add('bg-white/20');
+    activeTab.classList.remove('text-white/70');
+    activeSection.classList.remove('hidden');
+}
+
+textTab.addEventListener('click', () => switchTab(textTab, textSection));
+voiceTab.addEventListener('click', () => switchTab(voiceTab, voiceSection));
+pdfTab.addEventListener('click', () => switchTab(pdfTab, pdfSection));
+
+// Custom Formality Slider
+const formalitySlider = document.getElementById('customFormalitySlider');
+const formalityValue = document.getElementById('formalityValue');
+const useCustomFormality = document.getElementById('useCustomFormality');
+
+formalitySlider.addEventListener('input', (e) => {
+    formalityValue.textContent = e.target.value + '%';
+    useCustomFormality.checked = true;
+});
+
+// Character count
+const textInput = document.getElementById('textInput');
+const charCount = document.getElementById('charCount');
+
+textInput.addEventListener('input', () => {
+    charCount.textContent = `${textInput.value.length} characters`;
+});
+
+// Clear text
+document.getElementById('clearText').addEventListener('click', () => {
+    textInput.value = '';
+    charCount.textContent = '0 characters';
+});
+
+// Voice Recording
+const recordButton = document.getElementById('recordButton');
+const recordIcon = document.getElementById('recordIcon');
+const recordStatus = document.getElementById('recordStatus');
+const waveformIndicator = document.getElementById('waveformIndicator');
+const transcribedTextBox = document.getElementById('transcribedTextBox');
+const transcribedText = document.getElementById('transcribedText');
+
+recordButton.addEventListener('click', async () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        recordButton.classList.remove('bg-red-600');
+        recordButton.classList.add('btn-gradient');
+        recordIcon.className = 'fas fa-microphone text-white text-3xl';
+        recordStatus.textContent = 'Processing audio...';
+        waveformIndicator.classList.add('hidden');
+    } else {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.wav');
+                formData.append('language', document.getElementById('languageSelect').value);
+
+                try {
+                    const response = await fetch('/api/transcribe', {
+                        method: 'POST',
+                        headers: {'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')},
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        transcribedText.textContent = data.text;
+                        transcribedTextBox.classList.remove('hidden');
+                        recordStatus.textContent = 'Transcription successful!';
+                        textInput.value = data.text;
+                        charCount.textContent = `${data.text.length} characters`;
+                        showNotification('Audio transcribed successfully!', 'success');
+                    } else {
+                        showNotification(data.error, 'error');
+                        recordStatus.textContent = 'Transcription failed';
+                    }
+                } catch (error) {
+                    showNotification('Failed to transcribe audio', 'error');
+                    recordStatus.textContent = 'Transcription failed';
+                }
+
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            recordButton.classList.remove('btn-gradient');
+            recordButton.classList.add('bg-red-600');
+            recordIcon.className = 'fas fa-stop text-white text-3xl';
+            recordStatus.textContent = 'Speak now...';
+            waveformIndicator.classList.remove('hidden');
+        } catch (error) {
+            showNotification('Microphone access denied', 'error');
+        }
+    }
+});
+
+// PDF Upload
+const pdfFileInput = document.getElementById('pdfFileInput');
+const pdfProcessing = document.getElementById('pdfProcessing');
+const pdfExtractedBox = document.getElementById('pdfExtractedBox');
+const pdfExtractedText = document.getElementById('pdfExtractedText');
+
+pdfFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+        showNotification('Please select a PDF file', 'error');
+        return;
+    }
+
+    pdfProcessing.classList.remove('hidden');
+    pdfExtractedBox.classList.add('hidden');
+
+    const formData = new FormData();
+    formData.append('pdf', file);
+
+    try {
+        const response = await fetch('/api/upload-pdf', {
+            method: 'POST',
+            headers: {'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')},
+            body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            pdfExtractedText.textContent = data.text;
+            pdfExtractedBox.classList.remove('hidden');
+            textInput.value = data.text;
+            charCount.textContent = `${data.text.length} characters`;
+            showNotification('PDF text extracted successfully!', 'success');
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to process PDF', 'error');
+    } finally {
+        pdfProcessing.classList.add('hidden');
+    }
+});
+
+// Convert Button
+const convertButton = document.getElementById('convertButton');
+const convertText = document.getElementById('convertText');
+const convertSpinner = document.getElementById('convertSpinner');
+const outputCard = document.getElementById('outputCard');
+
+convertButton.addEventListener('click', async () => {
+    const text = textInput.value.trim();
+    const language = document.getElementById('languageSelect').value;
+    const outputMode = document.querySelector('input[name="outputMode"]:checked').value;
+    const formalityLevel = document.getElementById('formalityLevel').value;
+    const contextFormat = document.getElementById('contextFormat').value;
+    const customFormality = useCustomFormality.checked ? parseInt(formalitySlider.value) : null;
+
+    if (!text) {
+        showNotification('Please enter some text to convert', 'warning');
+        return;
+    }
+
+    convertButton.disabled = true;
+    convertText.textContent = 'Converting...';
+    convertSpinner.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/api/formalize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                text, 
+                language, 
+                output_mode: outputMode, 
+                formality_level: formalityLevel,
+                context: contextFormat,
+                custom_formality: customFormality
+            })
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let doneReading = false;
+        
+        // Prepare UI for streaming
+        document.getElementById('analyticsPlaceholder').classList.remove('hidden');
+        document.getElementById('analyticsContent').classList.add('hidden');
+        outputCard.classList.remove('hidden');
+        outputCard.scrollIntoView({behavior: 'smooth', block: 'start'});
+        document.getElementById('formalizedText').innerHTML = '<span class="animate-pulse text-white/50">Computing formal text...</span>';
+        
+        let firstChunk = true;
+
+        while (!doneReading) {
+            const { value, done } = await reader.read();
+            if (done) {
+                doneReading = true;
+                break;
+            }
+            
+            const chunkStr = decoder.decode(value, { stream: true });
+            const lines = chunkStr.split('\n\n');
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const jsonStr = line.substring(6);
+                    if (!jsonStr.trim()) continue;
+                    
+                    try {
+                        const data = JSON.parse(jsonStr);
+                        if (data.error) {
+                            showNotification(data.error, 'error');
+                            doneReading = true;
+                            break;
+                        }
+                        
+                        if (data.chunk) {
+                            if (firstChunk) {
+                                document.getElementById('formalizedText').innerHTML = '';
+                                firstChunk = false;
+                            }
+                            document.getElementById('formalizedText').textContent += data.chunk;
+                        }
+                        
+                        if (data.done) {
+                            displayResults(data.result);
+                            showNotification('Text converted successfully!', 'success');
+                            doneReading = true;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing SSE json', e, jsonStr);
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        showNotification('Conversion failed: ' + error.message, 'error');
+    } finally {
+        convertButton.disabled = false;
+        convertText.innerHTML = '<i class="fas fa-wand-magic-sparkles mr-2"></i>Convert to Formal';
+        convertSpinner.classList.add('hidden');
+    }
+});
+
+// Display Results Function
+function displayResults(data) {
+    // Store for PDF download and regeneration
+    currentFormData = data;
+    
+    // Update output
+    document.getElementById('selectedLang').textContent = data.selected_language;
+    document.getElementById('detectedLang').textContent = data.detected_language;
+    document.getElementById('outputMode').textContent = data.output_mode;
+    document.getElementById('contextTag').textContent = data.context_name || 'General';
+    
+    let formalityDisplay = data.formality_level.charAt(0).toUpperCase() + data.formality_level.slice(1);
+    if (data.custom_formality_score !== null) {
+        formalityDisplay = `Custom (${data.custom_formality_score}%)`;
+    }
+    document.getElementById('formalityTag').textContent = formalityDisplay;
+    
+    document.getElementById('originalText').textContent = data.original_text;
+    document.getElementById('formalizedText').textContent = data.formalized_text;
+
+    // Set output formality selector
+    if (data.custom_formality_score !== null) {
+        document.getElementById('outputFormalityLevel').value = 'custom';
+        document.getElementById('outputCustomSlider').classList.remove('hidden');
+        document.getElementById('outputCustomFormalitySlider').value = data.custom_formality_score;
+        document.getElementById('outputFormalityValue').textContent = data.custom_formality_score + '%';
+    } else {
+        document.getElementById('outputFormalityLevel').value = data.formality_level;
+        document.getElementById('outputCustomSlider').classList.add('hidden');
+    }
+
+    // Update analytics with animation
+    const orig = data.analytics.original;
+    const form = data.analytics.formalized;
+    
+    document.getElementById('origWords').textContent = orig.word_count;
+    document.getElementById('origSentences').textContent = orig.sentence_count;
+    document.getElementById('origFormality').textContent = orig.formality_score + '%';
+    
+    setTimeout(() => {
+        document.getElementById('origFormalityBar').style.width = orig.formality_score + '%';
+    }, 100);
+    
+    document.getElementById('formWords').textContent = form.word_count;
+    document.getElementById('formSentences').textContent = form.sentence_count;
+    document.getElementById('formFormality').textContent = form.formality_score + '%';
+    
+    setTimeout(() => {
+        document.getElementById('formFormalityBar').style.width = form.formality_score + '%';
+    }, 300);
+    
+    document.getElementById('improvement').textContent = '+' + data.analytics.improvement + '%';
+
+    document.getElementById('analyticsPlaceholder').classList.add('hidden');
+    document.getElementById('analyticsContent').classList.remove('hidden');
+    outputCard.classList.remove('hidden');
+
+    outputCard.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+// Output Formality Level Change Handler
+const outputFormalityLevel = document.getElementById('outputFormalityLevel');
+const outputCustomSlider = document.getElementById('outputCustomSlider');
+const outputCustomFormalitySlider = document.getElementById('outputCustomFormalitySlider');
+const outputFormalityValue = document.getElementById('outputFormalityValue');
+
+outputFormalityLevel.addEventListener('change', (e) => {
+    if (e.target.value === 'custom') {
+        outputCustomSlider.classList.remove('hidden');
+    } else {
+        outputCustomSlider.classList.add('hidden');
+    }
+});
+
+outputCustomFormalitySlider.addEventListener('input', (e) => {
+    outputFormalityValue.textContent = e.target.value + '%';
+});
+
+// Regenerate Button
+document.getElementById('regenerateButton').addEventListener('click', async () => {
+    if (!currentFormData.original_text) {
+        showNotification('No text to regenerate', 'warning');
+        return;
+    }
+
+    const regenerateBtn = document.getElementById('regenerateButton');
+    const originalHTML = regenerateBtn.innerHTML;
+    regenerateBtn.disabled = true;
+    regenerateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Regenerating...';
+
+    try {
+        const selectedFormality = outputFormalityLevel.value;
+        let customFormality = null;
+        let formalityLevel = selectedFormality;
+        
+        if (selectedFormality === 'custom') {
+            customFormality = parseInt(outputCustomFormalitySlider.value);
+            formalityLevel = 'professional'; // Default base
+        }
+
+        const response = await fetch('/api/formalize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                text: currentFormData.original_text,
+                language: document.getElementById('languageSelect').value,
+                output_mode: document.querySelector('input[name="outputMode"]:checked').value,
+                formality_level: formalityLevel,
+                context: document.getElementById('contextFormat').value,
+                custom_formality: customFormality
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            displayResults(data);
+            showNotification('Text regenerated successfully!', 'success');
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Regeneration failed: ' + error.message, 'error');
+    } finally {
+        regenerateBtn.disabled = false;
+        regenerateBtn.innerHTML = originalHTML;
+    }
+});
+
+// Copy Button (keeping original)
+document.getElementById('copyButton').addEventListener('click', () => {
+    const text = document.getElementById('formalizedText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification('Copied to clipboard!', 'success');
+    });
+});
+
+// Download PDF Button
+document.getElementById('downloadPdfButton').addEventListener('click', async () => {
+    if (!currentFormData.formalized_text) {
+        showNotification('No formalized text to download', 'warning');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/download-pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                original_text: currentFormData.original_text,
+                formalized_text: currentFormData.formalized_text,
+                language: currentFormData.selected_language,
+                formality_level: currentFormData.formality_level
+            })
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `formalized_document_${new Date().getTime()}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            showNotification('PDF downloaded successfully!', 'success');
+        } else {
+            showNotification('Failed to generate PDF', 'error');
+        }
+    } catch (error) {
+        showNotification('Download failed: ' + error.message, 'error');
+    }
+});
+
+// New Conversion
+document.getElementById('newConversion').addEventListener('click', () => {
+    textInput.value = '';
+    charCount.textContent = '0 characters';
+    outputCard.classList.add('hidden');
+    transcribedTextBox.classList.add('hidden');
+    pdfExtractedBox.classList.add('hidden');
+    document.getElementById('explanationSection').classList.add('hidden');
+    
+    // Stop any ongoing speech
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
+    pdfFileInput.value = '';
+    currentFormData = {};
+    window.scrollTo({top: 0, behavior: 'smooth'});
+});
+
+// Listen (TTS) Button
+document.getElementById('listenButton').addEventListener('click', () => {
+    if (!currentFormData.formalized_text) {
+        showNotification('No text to read', 'warning');
+        return;
+    }
+
+    if (!window.speechSynthesis) {
+        showNotification('Text-to-Speech is not supported in your browser', 'error');
+        return;
+    }
+
+    // Toggle logic: if speaking already, stop
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        document.getElementById('listenButton').innerHTML = '<i class="fas fa-volume-up mr-2"></i>Listen';
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(currentFormData.formalized_text);
+    
+    // Set language based on selected output
+    const langCodeMap = {
+        'English': 'en-IN',
+        'Hindi': 'hi-IN',
+        'Telugu': 'te-IN',
+        'Marathi': 'mr-IN',
+        'Tamil': 'ta-IN',
+        'Bengali': 'bn-IN',
+        'Gujarati': 'gu-IN',
+        'Malayalam': 'ml-IN',
+        'Kannada': 'kn-IN',
+        'Spanish': 'es-ES',
+        'French': 'fr-FR',
+        'German': 'de-DE',
+        'Japanese': 'ja-JP',
+        'Mandarin': 'zh-CN',
+        'Hinglish': 'hi-IN' // closest approximation
+    };
+    
+    const outputLang = currentFormData.output_mode === 'Translate to English' ? 'English' : currentFormData.selected_language;
+    utterance.lang = langCodeMap[outputLang] || 'en-US';
+    
+    utterance.onstart = () => {
+        document.getElementById('listenButton').innerHTML = '<i class="fas fa-stop mr-2"></i>Stop';
+        document.getElementById('listenButton').classList.add('bg-blue-500/30');
+    };
+    
+    utterance.onend = () => {
+        document.getElementById('listenButton').innerHTML = '<i class="fas fa-volume-up mr-2"></i>Listen';
+        document.getElementById('listenButton').classList.remove('bg-blue-500/30');
+    };
+
+    utterance.onerror = (e) => {
+        console.error('TTS Error:', e);
+        document.getElementById('listenButton').innerHTML = '<i class="fas fa-volume-up mr-2"></i>Listen';
+        document.getElementById('listenButton').classList.remove('bg-blue-500/30');
+        showNotification('Error playing audio', 'error');
+    };
+
+    window.speechSynthesis.speak(utterance);
+});
+
+// Explain Changes Button
+document.getElementById('explainButton').addEventListener('click', async () => {
+    if (!currentFormData.formalized_text) {
+        showNotification('No text to explain', 'warning');
+        return;
+    }
+
+    const explainBtn = document.getElementById('explainButton');
+    const explainSection = document.getElementById('explanationSection');
+    const explainContent = document.getElementById('explanationContent');
+    
+    const originalHTML = explainBtn.innerHTML;
+    explainBtn.disabled = true;
+    explainBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Thinking...';
+    
+    explainSection.classList.remove('hidden');
+    explainContent.innerHTML = '<div class="flex items-center space-x-2 text-white/50"><div class="spinner border-2 !w-4 !h-4"></div><span>Analyzing text changes...</span></div>';
+    explainSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+
+    try {
+        const response = await fetch('/api/explain', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                original_text: currentFormData.original_text,
+                formalized_text: currentFormData.formalized_text
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            explainContent.innerHTML = data.explanation;
+        } else {
+            explainContent.innerHTML = `<span class="text-red-400">Failed to generate explanation: ${data.error}</span>`;
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        explainContent.innerHTML = `<span class="text-red-400">Explanation failed: ${error.message}</span>`;
+        showNotification('Explanation failed: ' + error.message, 'error');
+    } finally {
+        explainBtn.disabled = false;
+        explainBtn.innerHTML = originalHTML;
+    }
+});
+
+// Close Explanation
+document.getElementById('closeExplanation').addEventListener('click', () => {
+    document.getElementById('explanationSection').classList.add('hidden');
+});
+</script>
+{% endblock %}

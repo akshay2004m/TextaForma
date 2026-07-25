@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Text Formalizer{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        
+        body { transition: background-color 0.3s ease; }
+        
+        .light-theme {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        .dark-theme {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .dark-theme .glass-card {
+            background: rgba(15, 12, 41, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: translateX(-50%);
+            transition: width 0.3s;
+        }
+        
+        .nav-link.active::before,
+        .nav-link:hover::before {
+            width: 80%;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stat-card {
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .recording {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .notification {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Dropdown Option Styling Fix */
+        select option {
+            background-color: #ffffff;
+            color: #333333;
+        }
+        
+        .dark-theme select option {
+            background-color: #24243e;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="light-theme min-h-screen">
+    <!-- Navigation -->
+    <nav class="glass-card sticky top-0 z-50 mb-8">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center floating">
+                        <i class="fas fa-magic text-white text-xl"></i>
+                    </div>
+                    <span class="text-white text-2xl font-bold">TextForma</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/home" class="nav-link text-white font-medium {% if request.path == '/home' %}active{% endif %}">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="/converter" class="nav-link text-white font-medium {% if request.path == '/converter' %}active{% endif %}">
+                        <i class="fas fa-wand-magic-sparkles mr-2"></i>Converter
+                    </a>
+                    <a href="/history" class="nav-link text-white font-medium {% if request.path == '/history' %}active{% endif %}">
+                        <i class="fas fa-clock-rotate-left mr-2"></i>History
+                    </a>
+                    <a href="/settings" class="nav-link text-white font-medium {% if request.path == '/settings' %}active{% endif %}">
+                        <i class="fas fa-gear mr-2"></i>Settings
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4 border-l border-white/20 pl-4">
+                    {% if session.get('user_id') %}
+                        <div class="hidden md:flex items-center space-x-2 text-white">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span class="font-medium">{{ session.get('user_name') }}</span>
+                        </div>
+                        <a href="/logout" class="hidden md:block text-white/80 hover:text-white transition text-sm mr-2">Logout</a>
+                    {% else %}
+                        <a href="/login" class="hidden md:block btn-gradient text-white font-medium py-1.5 px-4 rounded-lg text-sm hover:shadow-lg transition mr-2">Login</a>
+                    {% endif %}
+                    
+                    <button id="themeToggle" class="text-white text-2xl hover:scale-110 transition border-l border-white/20 pl-4">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="mobileMenuBtn" class="md:hidden text-white text-2xl ml-4">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="/home" class="block text-white font-medium py-2 px-4 rounded hover:bg-white/10">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="/converter" class="block text-white font-medium py-2 px-4 rounded hover:bg-white/10">
+                    <i class="fas fa-wand-magic-sparkles mr-2"></i>Converter
+                </a>
+                <a href="/history" class="block text-white font-medium py-2 px-4 rounded hover:bg-white/10">
+                    <i class="fas fa-clock-rotate-left mr-2"></i>History
+                </a>
+                <a href="/settings" class="block text-white font-medium py-2 px-4 rounded hover:bg-white/10">
+                    <i class="fas fa-gear mr-2"></i>Settings
+                </a>
+                <div class="border-t border-white/20 pt-2 mt-2">
+                    {% if session.get('user_id') %}
+                    <div class="px-4 py-2 text-white font-medium">
+                        <i class="fas fa-user-circle mr-2"></i>{{ session.get('user_name') }}
+                    </div>
+                    <a href="/logout" class="block text-red-300 font-medium py-2 px-4 rounded hover:bg-white/10">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                    {% else %}
+                    <a href="/login" class="block text-white font-medium py-2 px-4 rounded hover:bg-white/10 btn-gradient text-center mt-2">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pb-12">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        let isDark = false;
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            body.classList.toggle('light-theme');
+            body.classList.toggle('dark-theme');
+            themeToggle.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            
+            // Save to backend
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({theme: isDark ? 'dark' : 'light'})
+            });
+        });
+
+        // Load saved theme
+        const savedTheme = '{{ settings.theme }}';
+        if (savedTheme === 'dark') {
+            themeToggle.click();
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500',
+                warning: 'bg-yellow-500'
+            };
+            
+            notification.className = `notification glass-card ${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} text-xl"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Make notification function global
+        window.showNotification = showNotification;
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

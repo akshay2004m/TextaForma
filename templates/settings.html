@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - TextForma{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="glass-card rounded-2xl p-8 mb-6">
+        <h1 class="text-white text-3xl font-bold mb-2">
+            <i class="fas fa-gear mr-2"></i>Settings
+        </h1>
+        <p class="text-white/70 mb-8">Customize your text formalization experience</p>
+
+        <!-- Appearance Settings -->
+        <div class="mb-8">
+            <h2 class="text-white text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-palette mr-2"></i>Appearance
+            </h2>
+            <div class="bg-white/10 rounded-xl p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-white font-medium mb-1">Theme</div>
+                        <div class="text-white/60 text-sm">Choose your preferred color scheme</div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="lightThemeBtn" class="theme-btn px-6 py-3 rounded-lg bg-white/20 text-white font-medium transition">
+                            <i class="fas fa-sun mr-2"></i>Light
+                        </button>
+                        <button id="darkThemeBtn" class="theme-btn px-6 py-3 rounded-lg bg-white/10 text-white/70 font-medium transition">
+                            <i class="fas fa-moon mr-2"></i>Dark
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Default Settings -->
+        <div class="mb-8">
+            <h2 class="text-white text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-sliders mr-2"></i>Default Preferences
+            </h2>
+            <div class="space-y-4">
+                <!-- Default Language -->
+                <div class="bg-white/10 rounded-xl p-6">
+                    <label class="block text-white font-medium mb-3">Default Language</label>
+                    <select id="defaultLanguage" class="w-full bg-white/20 text-white px-4 py-3 rounded-lg border border-white/30 focus:border-white/50 focus:outline-none">
+                        <option value="english" {% if settings.default_language == 'english' %}selected{% endif %}>🇬🇧 English</option>
+                        <option value="hindi" {% if settings.default_language == 'hindi' %}selected{% endif %}>🇮🇳 Hindi (हिंदी)</option>
+                        <option value="telugu" {% if settings.default_language == 'telugu' %}selected{% endif %}>🇮🇳 Telugu (తెలుగు)</option>
+                        <option value="marathi" {% if settings.default_language == 'marathi' %}selected{% endif %}>🇮🇳 Marathi (मराठी)</option>
+                    </select>
+                </div>
+
+                <!-- Default Formality -->
+                <div class="bg-white/10 rounded-xl p-6">
+                    <label class="block text-white font-medium mb-3">Default Formality Level</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="defaultFormality" value="casual" {% if settings.default_formality == 'casual' %}checked{% endif %} class="peer sr-only">
+                            <div class="bg-white/10 p-4 rounded-lg border-2 border-white/20 peer-checked:border-purple-400 peer-checked:bg-purple-500/30 transition text-center">
+                                <i class="fas fa-comments text-white text-2xl mb-2"></i>
+                                <div class="text-white font-medium">Casual</div>
+                            </div>
+                        </label>
+
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="defaultFormality" value="professional" {% if settings.default_formality == 'professional' %}checked{% endif %} class="peer sr-only">
+                            <div class="bg-white/10 p-4 rounded-lg border-2 border-white/20 peer-checked:border-purple-400 peer-checked:bg-purple-500/30 transition text-center">
+                                <i class="fas fa-briefcase text-white text-2xl mb-2"></i>
+                                <div class="text-white font-medium">Professional</div>
+                            </div>
+                        </label>
+
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="defaultFormality" value="academic" {% if settings.default_formality == 'academic' %}checked{% endif %} class="peer sr-only">
+                            <div class="bg-white/10 p-4 rounded-lg border-2 border-white/20 peer-checked:border-purple-400 peer-checked:bg-purple-500/30 transition text-center">
+                                <i class="fas fa-graduation-cap text-white text-2xl mb-2"></i>
+                                <div class="text-white font-medium">Academic</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Display Settings -->
+        <div class="mb-8">
+            <h2 class="text-white text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-display mr-2"></i>Display Options
+            </h2>
+            <div class="bg-white/10 rounded-xl p-6">
+                <label class="flex items-center justify-between cursor-pointer">
+                    <div>
+                        <div class="text-white font-medium mb-1">Show Analytics</div>
+                        <div class="text-white/60 text-sm">Display detailed text analysis after conversion</div>
+                    </div>
+                    <div class="relative">
+                        <input type="checkbox" id="showAnalytics" {% if settings.show_analytics %}checked{% endif %} class="sr-only peer">
+                        <div class="w-14 h-8 bg-white/20 rounded-full peer-checked:bg-purple-500 transition"></div>
+                        <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition peer-checked:translate-x-6"></div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex justify-end">
+            <button id="saveSettings" class="btn-gradient text-white font-bold px-8 py-4 rounded-xl">
+                <i class="fas fa-save mr-2"></i>Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="glass-card rounded-2xl p-8">
+        <h2 class="text-white text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>About TextForma
+        </h2>
+        <div class="space-y-4 text-white/80">
+            <p>
+                TextForma is an advanced AI-powered text formalization tool that helps you convert informal text into professional, well-structured content.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/10 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-2 flex items-center">
+                        <i class="fas fa-robot text-purple-400 mr-2"></i>AI Models
+                    </h3>
+                    <ul class="text-sm space-y-1">
+                        <li>• BART (Facebook AI)</li>
+                        <li>• Gemini 2.0 Flash Lite</li>
+                    </ul>
+                </div>
+                <div class="bg-white/10 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-2 flex items-center">
+                        <i class="fas fa-language text-blue-400 mr-2"></i>Languages
+                    </h3>
+                    <ul class="text-sm space-y-1">
+                        <li>• English</li>
+                        <li>• Hindi, Telugu, Marathi</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-lg p-4 mt-4">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-heart text-red-400 text-2xl"></i>
+                    <div>
+                        <div class="text-white font-semibold">Made with passion</div>
+                        <div class="text-white/60 text-sm">Using Flask, Transformers, and Gemini AI</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Theme Toggle
+const lightBtn = document.getElementById('lightThemeBtn');
+const darkBtn = document.getElementById('darkThemeBtn');
+
+lightBtn.addEventListener('click', () => {
+    lightBtn.classList.add('bg-white/20');
+    lightBtn.classList.remove('bg-white/10', 'text-white/70');
+    darkBtn.classList.remove('bg-white/20');
+    darkBtn.classList.add('bg-white/10', 'text-white/70');
+});
+
+darkBtn.addEventListener('click', () => {
+    darkBtn.classList.add('bg-white/20');
+    darkBtn.classList.remove('bg-white/10', 'text-white/70');
+    lightBtn.classList.remove('bg-white/20');
+    lightBtn.classList.add('bg-white/10', 'text-white/70');
+});
+
+// Load current theme
+const savedTheme = '{{ settings.theme }}';
+if (savedTheme === 'dark') {
+    darkBtn.click();
+}
+
+// Save Settings
+document.getElementById('saveSettings').addEventListener('click', async () => {
+    const theme = darkBtn.classList.contains('bg-white/20') ? 'dark' : 'light';
+    const defaultLanguage = document.getElementById('defaultLanguage').value;
+    const defaultFormality = document.querySelector('input[name="defaultFormality"]:checked').value;
+    const showAnalytics = document.getElementById('showAnalytics').checked;
+
+    const settings = {
+        theme,
+        default_language: defaultLanguage,
+        default_formality: defaultFormality,
+        show_analytics: showAnalytics
+    };
+
+    try {
+        const response = await fetch('/api/settings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(settings)
+        });
+
+        if (response.ok) {
+            showNotification('Settings saved successfully!', 'success');
+            
+            // Apply theme immediately
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const isDark = theme === 'dark';
+            
+            if (isDark && body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeToggle.querySelector('i').className = 'fas fa-sun';
+            } else if (!isDark && body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeToggle.querySelector('i').className = 'fas fa-moon';
+            }
+        } else {
+            showNotification('Failed to save settings', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to save settings', 'error');
+    }
+});
+</script>
+{% endblock %}
