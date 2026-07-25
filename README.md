@@ -34,8 +34,8 @@ An advanced, AI-powered tool designed to elevate everyday communication by conve
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/akshay2004m/Language-transalator.git
-   cd Language-transalator
+   git clone https://github.com/akshay2004m/TextaForma.git
+   cd TextaForma
    ```
 
 2. **Create and activate a virtual environment:**
@@ -71,7 +71,29 @@ An advanced, AI-powered tool designed to elevate everyday communication by conve
 
 ## Screenshots
 
-*[Placeholder: Add screenshots of the Home Dashboard, Converter Interface, and History Analytics after running the app locally]*
+<div align="center">
+  <img src="assets/home.png" alt="Home Dashboard" width="800">
+  <br>
+  <em>Home Dashboard</em>
+</div>
+<br>
+<div align="center">
+  <img src="assets/converter.png" alt="Converter Interface" width="800">
+  <br>
+  <em>Converter Interface</em>
+</div>
+<br>
+<div align="center">
+  <img src="assets/history.png" alt="History Analytics" width="800">
+  <br>
+  <em>History Analytics</em>
+</div>
+<br>
+<div align="center">
+  <img src="assets/settings.png" alt="Settings Page" width="800">
+  <br>
+  <em>Settings Page</em>
+</div>
 
 ## Design Decisions
 
